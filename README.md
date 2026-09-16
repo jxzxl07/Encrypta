@@ -3,7 +3,7 @@
 End-to-end encrypted messaging, group chat, and voice and video calls between
 people anywhere on the internet, not just on the same LAN.
 
-Try: encrypta-2-0.onrender.com
+Try: https://encrypta-2-0.onrender.com
 
 You sign up with a username and verify your email with a one-time code. You add
 people by username, then message them directly, create groups, or call them
