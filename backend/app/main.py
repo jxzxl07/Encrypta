@@ -18,6 +18,13 @@ settings = get_settings()
 async def lifespan(_: FastAPI):
     if settings.jwt_secret == "change-me":
         logging.getLogger("encrypta").warning("JWT_SECRET is the default. Set a random value before deploying.")
+    mail = settings.email_provider.strip().lower()
+    logging.getLogger("encrypta").info(
+        "email: provider=%s api_key=%s smtp_host=%s",
+        mail,
+        "set" if settings.email_api_key else "missing",
+        settings.smtp_host or "-",
+    )
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield

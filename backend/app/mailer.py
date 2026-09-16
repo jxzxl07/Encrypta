@@ -40,9 +40,13 @@ async def send_code(to: str, code: str, purpose: str) -> None:
     subject = _SUBJECTS[purpose]
     text = f"Your Encrypta code is {code}. It expires in {settings.otp_ttl_minutes} minutes."
 
-    if provider in {"resend", "brevo"} and settings.email_api_key:
+    if provider in {"resend", "brevo"}:
+        if not settings.email_api_key:
+            raise RuntimeError(f"EMAIL_PROVIDER is {provider} but EMAIL_API_KEY is empty")
         await _send_api(provider, to, subject, text, _html(code, purpose))
         return
+    if provider != "smtp":
+        raise RuntimeError(f"Unknown EMAIL_PROVIDER {settings.email_provider!r}; use smtp, brevo or resend")
     if not settings.smtp_host:
         log.warning("[DEV MAIL] %s code for %s: %s", purpose, to, code)
         return
@@ -69,14 +73,15 @@ async def send_code(to: str, code: str, purpose: str) -> None:
 async def _send_api(provider: str, to: str, subject: str, text: str, html: str) -> None:
     """Send over HTTPS, which works where outbound SMTP ports are blocked."""
     settings = get_settings()
+    api_key = settings.email_api_key.strip().strip('"').strip("'")
     name, address = parseaddr(settings.smtp_from)
     if provider == "resend":
         url = "https://api.resend.com/emails"
-        headers = {"Authorization": f"Bearer {settings.email_api_key}"}
+        headers = {"Authorization": f"Bearer {api_key}"}
         payload = {"from": settings.smtp_from, "to": [to], "subject": subject, "text": text, "html": html}
     else:
         url = "https://api.brevo.com/v3/smtp/email"
-        headers = {"api-key": settings.email_api_key, "accept": "application/json"}
+        headers = {"api-key": api_key, "accept": "application/json"}
         payload = {
             "sender": {"name": name or "Encrypta", "email": address},
             "to": [{"email": to}],
