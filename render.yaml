@@ -18,6 +18,10 @@ services:
         value: admin
       - key: ADMIN_PASSWORD
         sync: false
+      - key: EMAIL_PROVIDER
+        sync: false
+      - key: EMAIL_API_KEY
+        sync: false
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT

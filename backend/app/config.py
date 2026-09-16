@@ -20,7 +20,11 @@ class Settings(BaseSettings):
     otp_max_attempts: int = 5
     otp_resend_seconds: int = 30
 
-    # Email. With smtp_host empty, codes are printed to the server log.
+    # Email. "smtp", or an HTTPS API ("resend" / "brevo") for hosts that block
+    # SMTP ports, such as Render's free plan. With no provider configured,
+    # codes are printed to the server log.
+    email_provider: str = "smtp"
+    email_api_key: str = ""
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_username: str = ""

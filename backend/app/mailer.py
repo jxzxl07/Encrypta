@@ -1,7 +1,9 @@
 import logging
 from email.message import EmailMessage
+from email.utils import parseaddr
 
 import aiosmtplib
+import httpx
 
 from .config import get_settings
 
@@ -34,6 +36,13 @@ def _html(code: str, purpose: str) -> str:
 
 async def send_code(to: str, code: str, purpose: str) -> None:
     settings = get_settings()
+    provider = settings.email_provider.strip().lower()
+    subject = _SUBJECTS[purpose]
+    text = f"Your Encrypta code is {code}. It expires in {settings.otp_ttl_minutes} minutes."
+
+    if provider in {"resend", "brevo"} and settings.email_api_key:
+        await _send_api(provider, to, subject, text, _html(code, purpose))
+        return
     if not settings.smtp_host:
         log.warning("[DEV MAIL] %s code for %s: %s", purpose, to, code)
         return
@@ -41,8 +50,8 @@ async def send_code(to: str, code: str, purpose: str) -> None:
     msg = EmailMessage()
     msg["From"] = settings.smtp_from
     msg["To"] = to
-    msg["Subject"] = _SUBJECTS[purpose]
-    msg.set_content(f"Your Encrypta code is {code}. It expires in {settings.otp_ttl_minutes} minutes.")
+    msg["Subject"] = subject
+    msg.set_content(text)
     msg.add_alternative(_html(code, purpose), subtype="html")
 
     await aiosmtplib.send(
@@ -55,3 +64,27 @@ async def send_code(to: str, code: str, purpose: str) -> None:
         use_tls=settings.smtp_ssl,
         timeout=20,
     )
+
+
+async def _send_api(provider: str, to: str, subject: str, text: str, html: str) -> None:
+    """Send over HTTPS, which works where outbound SMTP ports are blocked."""
+    settings = get_settings()
+    name, address = parseaddr(settings.smtp_from)
+    if provider == "resend":
+        url = "https://api.resend.com/emails"
+        headers = {"Authorization": f"Bearer {settings.email_api_key}"}
+        payload = {"from": settings.smtp_from, "to": [to], "subject": subject, "text": text, "html": html}
+    else:
+        url = "https://api.brevo.com/v3/smtp/email"
+        headers = {"api-key": settings.email_api_key, "accept": "application/json"}
+        payload = {
+            "sender": {"name": name or "Encrypta", "email": address},
+            "to": [{"email": to}],
+            "subject": subject,
+            "textContent": text,
+            "htmlContent": html,
+        }
+    async with httpx.AsyncClient(timeout=20) as client:
+        res = await client.post(url, headers=headers, json=payload)
+    if res.status_code >= 300:
+        raise RuntimeError(f"{provider} rejected the email ({res.status_code}): {res.text[:300]}")

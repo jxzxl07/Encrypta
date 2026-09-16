@@ -114,6 +114,7 @@ All settings live in `backend/.env`. See [backend/.env.example](backend/.env.exa
 | `DATABASE_URL` | Any Postgres URL. Hosted URLs with `?sslmode=require` (Neon, Supabase, RDS) are handled |
 | `JWT_SECRET` | Long random string. Required in production |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD` | The preset administrator login for `/admin`. An empty password disables the console |
+| `EMAIL_PROVIDER`, `EMAIL_API_KEY` | `smtp` (default), or `brevo` / `resend` to send over HTTPS. Needed on hosts that block SMTP ports, including Render's free plan. The sender comes from `SMTP_FROM` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM`, `SMTP_STARTTLS`, `SMTP_SSL` | Outgoing mail for passcodes (Gmail app password, Resend, SendGrid, Postmark, SES…) |
 | `CORS_ORIGINS` | Only needed if the frontend is served from a different origin than the API |
 | `STUN_URLS` | STUN servers for WebRTC (Google's public ones by default) |
