@@ -1,4 +1,4 @@
-# Encrypta 2.0
+# Encrypta 
 
 End-to-end encrypted messaging, group chat, and voice and video calls between
 people anywhere on the internet, not just on the same LAN.
