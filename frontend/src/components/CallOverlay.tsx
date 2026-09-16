@@ -79,12 +79,12 @@ export default function CallOverlay() {
         {isVideo && <StreamVideo stream={call.remoteStream} className="hidden" />}
         <button
           onClick={() => setMinimised(false)}
-          className="glass fixed right-4 bottom-4 z-50 flex animate-rise items-center gap-3 rounded-2xl py-2.5 pr-4 pl-2.5 shadow-2xl"
+          className="surface fixed right-4 bottom-4 z-50 flex animate-rise items-center gap-3 rounded-lg py-2 pr-4 pl-2"
         >
-          <Avatar name={name} seed={seed} size={40} />
+          <Avatar name={name} seed={seed} size={32} />
           <div className="text-left">
             <div className="text-sm font-semibold">{name}</div>
-            <div className="font-mono text-xs text-emerald-300">{status}</div>
+            <div className="text-xs text-ink-300 tabular-nums">{status}</div>
           </div>
         </button>
       </>
@@ -93,7 +93,6 @@ export default function CallOverlay() {
 
   return (
     <div className="fixed inset-0 z-50 flex animate-rise flex-col overflow-hidden bg-ink-950">
-      <div className="aurora" />
       {remoteAudio}
       {isVideo && call.remoteStream && (
         <StreamVideo
@@ -104,37 +103,35 @@ export default function CallOverlay() {
       {isVideo && remoteHasVideo && <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/60 via-transparent to-ink-950/80" />}
 
       <header className="relative flex items-center justify-between p-4 sm:p-6">
-        <span className="flex items-center gap-1.5 rounded-full bg-white/[0.07] px-3 py-1.5 text-xs text-ink-200 backdrop-blur">
+        <span className="flex items-center gap-1.5 rounded-md bg-black/30 px-2.5 py-1 text-xs text-ink-300">
           <Lock className="h-3 w-3" /> End-to-end encrypted
         </span>
         {(call.phase === 'active' || call.phase === 'connecting') && (
-          <button onClick={() => setMinimised(true)} aria-label="Minimise call" className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.07] text-ink-200 backdrop-blur hover:bg-white/15">
+          <button onClick={() => setMinimised(true)} aria-label="Minimise call" className="grid h-9 w-9 place-items-center rounded-md bg-black/30 text-ink-200 hover:bg-black/50">
             <Minimize2 className="h-4 w-4" />
           </button>
         )}
       </header>
 
       <div className={clsx('relative flex flex-1 flex-col items-center justify-center px-6 text-center', isVideo && remoteHasVideo && 'invisible')}>
-        <div className={clsx('rounded-full', (call.phase === 'incoming' || call.phase === 'outgoing') && 'animate-pulse-ring')}>
-          <Avatar name={name} seed={seed} size={132} />
-        </div>
-        <h2 className="mt-6 text-3xl font-semibold tracking-tight">{name}</h2>
-        <p className={clsx('mt-2 text-base', call.phase === 'active' ? 'font-mono text-emerald-300' : 'text-ink-300')}>{status}</p>
+        <Avatar name={name} seed={seed} size={96} />
+        <h2 className="mt-5 text-xl font-semibold">{name}</h2>
+        <p className="mt-1 text-sm text-ink-300 tabular-nums">{status}</p>
       </div>
 
       {isVideo && remoteHasVideo && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 text-center">
-          <div className="text-lg font-semibold drop-shadow">{name}</div>
-          <div className="font-mono text-sm text-emerald-300 drop-shadow">{status}</div>
+          <div className="text-base font-semibold">{name}</div>
+          <div className="text-sm text-ink-200 tabular-nums">{status}</div>
         </div>
       )}
 
       {isVideo && call.localStream && (
-        <div className="absolute right-4 bottom-32 h-44 w-32 overflow-hidden rounded-2xl border border-white/10 bg-ink-800 shadow-2xl sm:right-6 sm:h-52 sm:w-72">
+        <div className="absolute right-4 bottom-32 h-44 w-32 overflow-hidden rounded-lg border border-white/10 bg-ink-800 sm:right-6 sm:h-52 sm:w-72">
           <StreamVideo stream={call.localStream} muted className={clsx('h-full w-full -scale-x-100 object-cover', call.cameraOff && 'opacity-0')} />
           {call.cameraOff && (
             <div className="absolute inset-0 grid place-items-center text-ink-400">
-              <VideoOff className="h-6 w-6" />
+              <VideoOff className="h-5 w-5" />
             </div>
           )}
         </div>
@@ -143,17 +140,17 @@ export default function CallOverlay() {
       <footer className="relative flex items-center justify-center gap-4 p-8 pb-[max(2rem,env(safe-area-inset-bottom))]">
         {call.phase === 'incoming' ? (
           <>
-            <RoundButton label="Decline" onClick={call.decline} className="bg-rose-500 hover:bg-rose-400">
-              <PhoneOff className="h-6 w-6" />
+            <RoundButton label="Decline" onClick={call.decline} className="bg-rose-600 hover:bg-rose-500">
+              <PhoneOff className="h-5 w-5" />
             </RoundButton>
-            <RoundButton label="Accept" onClick={() => void call.accept()} className="bg-emerald-500 hover:bg-emerald-400">
-              {isVideo ? <Video className="h-6 w-6" /> : <Phone className="h-6 w-6" />}
+            <RoundButton label="Accept" onClick={() => void call.accept()} className="bg-emerald-600 hover:bg-emerald-500">
+              {isVideo ? <Video className="h-5 w-5" /> : <Phone className="h-5 w-5" />}
             </RoundButton>
           </>
         ) : call.phase === 'ended' ? null : (
           <>
             <RoundButton label={call.muted ? 'Unmute' : 'Mute'} onClick={call.toggleMute} className={call.muted ? 'bg-white text-ink-950' : 'bg-white/10 hover:bg-white/20'}>
-              {call.muted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+              {call.muted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
             </RoundButton>
             {isVideo && (
               <RoundButton
@@ -161,11 +158,11 @@ export default function CallOverlay() {
                 onClick={call.toggleCamera}
                 className={call.cameraOff ? 'bg-white text-ink-950' : 'bg-white/10 hover:bg-white/20'}
               >
-                {call.cameraOff ? <VideoOff className="h-6 w-6" /> : <Video className="h-6 w-6" />}
+                {call.cameraOff ? <VideoOff className="h-5 w-5" /> : <Video className="h-5 w-5" />}
               </RoundButton>
             )}
-            <RoundButton label="Hang up" onClick={call.hangUp} className="bg-rose-500 hover:bg-rose-400">
-              <PhoneOff className="h-6 w-6" />
+            <RoundButton label="Hang up" onClick={call.hangUp} className="bg-rose-600 hover:bg-rose-500">
+              <PhoneOff className="h-5 w-5" />
             </RoundButton>
           </>
         )}
@@ -180,7 +177,7 @@ function RoundButton({ label, onClick, className, children }: { label: string; o
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={clsx('grid h-16 w-16 place-items-center rounded-full text-white shadow-xl backdrop-blur transition active:scale-95', className)}
+      className={clsx('grid h-14 w-14 place-items-center rounded-full text-white transition-colors', className)}
     >
       {children}
     </button>

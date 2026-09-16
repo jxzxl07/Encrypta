@@ -2,12 +2,13 @@ import clsx from 'clsx'
 import { Loader2, X } from 'lucide-react'
 import { useEffect, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from 'react'
 
-const HUES = [262, 199, 330, 160, 24, 222, 290, 180]
+// Muted, low-saturation avatar tones.
+const TONES = ['#4a5a78', '#5b6e5d', '#7a5d5d', '#6a5f7c', '#5d6f78', '#7a6a55', '#566574', '#6d5a6e']
 
-function hueFor(seed: string) {
+function toneFor(seed: string) {
   let h = 0
   for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0
-  return HUES[h % HUES.length]
+  return TONES[h % TONES.length]
 }
 
 export function Avatar({
@@ -23,7 +24,6 @@ export function Avatar({
   online?: boolean
   group?: boolean
 }) {
-  const hue = hueFor(seed)
   const initials = name
     .split(/\s+/)
     .filter(Boolean)
@@ -33,21 +33,18 @@ export function Avatar({
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <div
-        className={clsx('grid h-full w-full place-items-center font-semibold text-white', group ? 'rounded-[30%]' : 'rounded-full')}
-        style={{
-          background: `linear-gradient(135deg, hsl(${hue} 70% 58%), hsl(${(hue + 40) % 360} 75% 45%))`,
-          fontSize: size * 0.38,
-        }}
+        className={clsx('grid h-full w-full place-items-center font-medium text-white/90', group ? 'rounded-[25%]' : 'rounded-full')}
+        style={{ background: toneFor(seed), fontSize: size * 0.36 }}
       >
         {initials || '?'}
       </div>
       {online !== undefined && (
         <span
           className={clsx(
-            'absolute right-0 bottom-0 rounded-full ring-[3px] ring-ink-900 transition-colors',
-            online ? 'bg-emerald-400' : 'bg-ink-600',
+            'absolute right-0 bottom-0 rounded-full ring-2 ring-ink-900 transition-colors',
+            online ? 'bg-emerald-500' : 'bg-ink-600',
           )}
-          style={{ width: size * 0.28, height: size * 0.28 }}
+          style={{ width: Math.max(8, size * 0.24), height: Math.max(8, size * 0.24) }}
         />
       )}
     </div>
@@ -69,11 +66,11 @@ export function Button({
       {...rest}
       disabled={disabled || loading}
       className={clsx(
-        'inline-flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
-        variant === 'primary' && 'bg-brand-gradient text-white shadow-lg shadow-brand-600/25 hover:brightness-110 active:brightness-95',
-        variant === 'ghost' && 'text-ink-200 hover:bg-white/5 hover:text-white',
-        variant === 'subtle' && 'bg-white/[0.06] text-ink-100 hover:bg-white/10',
-        variant === 'danger' && 'bg-rose-500/15 text-rose-300 hover:bg-rose-500/25',
+        'inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+        variant === 'primary' && 'bg-brand-500 text-white hover:bg-brand-600',
+        variant === 'ghost' && 'text-ink-200 hover:bg-white/[0.05] hover:text-ink-100',
+        variant === 'subtle' && 'border border-white/[0.08] bg-ink-850 text-ink-100 hover:bg-ink-800',
+        variant === 'danger' && 'border border-white/[0.08] bg-ink-850 text-rose-300 hover:bg-rose-500/10',
         className,
       )}
     >
@@ -95,7 +92,7 @@ export function IconButton({
       aria-label={label}
       title={label}
       className={clsx(
-        'grid h-10 w-10 place-items-center rounded-xl text-ink-300 transition hover:bg-white/[0.07] hover:text-white focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none disabled:opacity-40',
+        'grid h-9 w-9 place-items-center rounded-md text-ink-300 transition-colors hover:bg-white/[0.06] hover:text-ink-100 focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none disabled:opacity-40',
         className,
       )}
     >
@@ -113,12 +110,12 @@ export function Field({
 }: InputHTMLAttributes<HTMLInputElement> & { label: string; hint?: ReactNode; error?: string }) {
   return (
     <label className={clsx('block', className)}>
-      <span className="mb-1.5 block text-xs font-medium tracking-wide text-ink-300">{label}</span>
+      <span className="mb-1.5 block text-[13px] font-medium text-ink-200">{label}</span>
       <input
         {...rest}
         className={clsx(
-          'h-11 w-full rounded-xl border bg-ink-950/60 px-3.5 text-[15px] text-white placeholder:text-ink-400 transition outline-none',
-          error ? 'border-rose-400/60' : 'border-white/[0.08] focus:border-brand-400/70 focus:bg-ink-950',
+          'h-10 w-full rounded-md border bg-ink-850 px-3 text-sm text-ink-100 placeholder:text-ink-400 transition-colors outline-none',
+          error ? 'border-rose-400/60' : 'border-white/[0.09] focus:border-brand-500',
         )}
       />
       {(error || hint) && <span className={clsx('mt-1.5 block text-xs', error ? 'text-rose-300' : 'text-ink-400')}>{error || hint}</span>}
@@ -148,16 +145,16 @@ export function Modal({
 
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-ink-950/70 p-4 backdrop-blur-sm" onMouseDown={onClose}>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" onMouseDown={onClose}>
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onMouseDown={(e) => e.stopPropagation()}
-        className={clsx('glass w-full animate-rise rounded-2xl shadow-2xl', wide ? 'max-w-lg' : 'max-w-md')}
+        className={clsx('surface w-full animate-rise rounded-lg', wide ? 'max-w-lg' : 'max-w-md')}
       >
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
-          <h2 className="text-base font-semibold">{title}</h2>
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3.5">
+          <h2 className="text-[15px] font-semibold">{title}</h2>
           <IconButton label="Close" onClick={onClose} className="-mr-2 h-8 w-8">
             <X className="h-4 w-4" />
           </IconButton>
@@ -168,8 +165,8 @@ export function Modal({
   )
 }
 
-export function Logo({ size = 36 }: { size?: number }) {
-  return <img src="/favicon.svg" width={size} height={size} alt="" className="shrink-0 drop-shadow-[0_6px_18px_rgba(139,92,246,0.45)]" />
+export function Logo({ size = 28 }: { size?: number }) {
+  return <img src="/favicon.svg" width={size} height={size} alt="" className="shrink-0" />
 }
 
 export function Spinner({ className }: { className?: string }) {
@@ -178,5 +175,5 @@ export function Spinner({ className }: { className?: string }) {
 
 export function ErrorNote({ children }: { children?: ReactNode }) {
   if (!children) return null
-  return <div className="rounded-xl border border-rose-400/20 bg-rose-500/10 px-3.5 py-2.5 text-sm text-rose-200">{children}</div>
+  return <div className="rounded-md border border-rose-400/20 bg-rose-500/[0.08] px-3 py-2 text-sm text-rose-200">{children}</div>
 }

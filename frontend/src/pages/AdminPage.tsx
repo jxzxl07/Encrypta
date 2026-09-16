@@ -72,12 +72,11 @@ function AdminLogin({ onToken }: { onToken: (t: string) => void }) {
 
   return (
     <div className="relative grid min-h-full place-items-center px-4 py-10">
-      <div className="aurora" />
-      <form onSubmit={submit} className="glass relative w-full max-w-sm animate-rise space-y-5 rounded-3xl p-7 shadow-2xl">
+      <form onSubmit={submit} className="surface relative w-full max-w-sm space-y-4 rounded-lg p-6">
         <div className="flex items-center gap-3">
           <Logo />
           <div>
-            <div className="font-semibold">Encrypta Admin</div>
+            <div className="text-sm font-semibold">Encrypta Admin</div>
             <div className="text-xs text-ink-400">Accounts and live presence</div>
           </div>
         </div>
@@ -136,14 +135,13 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
 
   return (
     <div className="relative min-h-full">
-      <div className="aurora" />
-      <header className="glass sticky top-0 z-20 border-x-0 border-t-0">
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4">
+      <header className="surface sticky top-0 z-20 border-x-0 border-t-0">
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4">
           <Logo size={32} />
           <div className="flex-1">
-            <div className="font-semibold">Encrypta Admin</div>
+            <div className="text-sm font-semibold">Encrypta Admin</div>
             <div className="flex items-center gap-1.5 text-xs text-ink-400">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /> Live · refreshes every 5s
+              Refreshes every 5 seconds
             </div>
           </div>
           <IconButton label="Refresh" onClick={() => void load()}>
@@ -170,21 +168,20 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
                 label="Online now"
                 value={data.stats.online}
                 sub={`${data.stats.sessions} session${data.stats.sessions === 1 ? '' : 's'}`}
-                accent
               />
               <Stat icon={<UsersRound className="h-4 w-4" />} label="Connections" value={data.stats.connections} sub={`${data.stats.groups} groups`} />
               <Stat icon={<MessageSquare className="h-4 w-4" />} label="Messages" value={data.stats.messages} sub="all ciphertext" />
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="flex gap-1 rounded-xl bg-white/[0.04] p-1">
+              <div className="flex gap-1 rounded-lg bg-white/[0.04] p-1">
                 {(['all', 'online', 'offline', 'unverified'] as Filter[]).map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
                     className={clsx(
                       'rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition',
-                      filter === f ? 'bg-brand-500/25 text-white' : 'text-ink-400 hover:text-ink-100',
+                      filter === f ? 'bg-white/[0.08] text-ink-100' : 'text-ink-400 hover:text-ink-100',
                     )}
                   >
                     {f}
@@ -197,13 +194,13 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search users"
-                  className="h-10 w-full rounded-xl bg-white/[0.05] pr-3 pl-9 text-sm placeholder:text-ink-400 outline-none focus:ring-1 focus:ring-brand-400/50"
+                  className="h-9 w-full rounded-md border border-white/[0.07] bg-ink-850 pr-3 pl-9 text-sm placeholder:text-ink-400 outline-none focus:border-brand-500"
                 />
               </div>
             </div>
 
-            <div className="glass mt-4 overflow-hidden rounded-2xl">
-              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2fr)_1fr_1fr_1fr] gap-4 border-b border-white/[0.06] px-5 py-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase md:grid">
+            <div className="surface mt-4 overflow-hidden rounded-lg">
+              <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2fr)_1fr_1fr_1fr] gap-4 border-b border-white/[0.06] px-5 py-2.5 text-xs font-medium text-ink-400 md:grid">
                 <span>User</span>
                 <span>Email</span>
                 <span>Status</span>
@@ -230,18 +227,18 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
                   </div>
                   <div className="flex min-w-0 items-center gap-1.5 text-sm text-ink-300">
                     <span className="truncate">{u.email}</span>
-                    {u.email_verified && <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-label="Email verified" />}
+                    {u.email_verified && <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-ink-400" aria-label="Email verified" />}
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     {!u.email_verified ? (
-                      <span className="rounded-full bg-amber-400/10 px-2 py-0.5 text-xs font-medium text-amber-300">Unverified</span>
+                      <span className="text-xs text-amber-300/90">Unverified</span>
                     ) : u.online ? (
-                      <span className="flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-2 py-0.5 text-xs font-medium text-emerald-300" title={u.sessions.map((s) => `${s.ip} · ${s.user_agent}`).join('\n')}>
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      <span className="flex items-center gap-1.5 text-xs text-ink-100" title={u.sessions.map((s) => `${s.ip} · ${s.user_agent}`).join('\n')}>
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                         Online{u.sessions.length > 1 && ` · ${u.sessions.length}`}
                       </span>
                     ) : (
-                      <span className="rounded-full bg-white/[0.05] px-2 py-0.5 text-xs font-medium text-ink-400">Offline</span>
+                      <span className="flex items-center gap-1.5 text-xs text-ink-400"><span className="h-1.5 w-1.5 rounded-full bg-ink-600" />Offline</span>
                     )}
                     <span className="text-xs text-ink-400 md:hidden">{u.online ? '' : relative(u.last_seen_at)}</span>
                   </div>
@@ -258,13 +255,13 @@ function Dashboard({ token, onSignOut }: { token: string; onSignOut: () => void 
   )
 }
 
-function Stat({ icon, label, value, sub, accent }: { icon: React.ReactNode; label: string; value: number; sub: string; accent?: boolean }) {
+function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: number; sub: string }) {
   return (
-    <div className={clsx('glass rounded-2xl p-4 sm:p-5', accent && 'border-emerald-400/20!')}>
-      <div className={clsx('flex items-center gap-2 text-xs font-medium', accent ? 'text-emerald-300' : 'text-ink-400')}>
+    <div className={'surface rounded-lg p-4'}>
+      <div className={'flex items-center gap-2 text-xs font-medium text-ink-400'}>
         {icon} {label}
       </div>
-      <div className="mt-2 text-3xl font-semibold tracking-tight tabular-nums">{value.toLocaleString()}</div>
+      <div className="mt-1.5 text-2xl font-semibold tabular-nums">{value.toLocaleString()}</div>
       <div className="mt-0.5 text-xs text-ink-400">{sub}</div>
     </div>
   )

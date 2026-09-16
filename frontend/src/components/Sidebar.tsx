@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { LogOut, MessageSquarePlus, MessagesSquare, Search, ShieldCheck, UserPlus, Users } from 'lucide-react'
+import { LogOut, MessageSquarePlus, MessagesSquare, Search, UserPlus, Users } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { shortStamp } from '../lib/format'
 import type { ConversationKey } from '../lib/types'
@@ -78,14 +78,14 @@ export default function Sidebar({
 
   return (
     <div className="flex h-full min-h-0">
-      <nav className="flex w-[68px] shrink-0 flex-col items-center gap-2 border-r border-white/[0.05] bg-ink-950/60 py-4">
-        <Logo size={34} />
-        <div className="mt-5 flex flex-col gap-1.5">
+      <nav className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-white/[0.07] bg-ink-950 py-3">
+        <Logo size={26} />
+        <div className="mt-4 flex flex-col gap-1">
           <RailButton label="Chats" active={panel === 'chats'} onClick={() => onPanel('chats')}>
-            <MessagesSquare className="h-5 w-5" />
+            <MessagesSquare className="h-[18px] w-[18px]" />
           </RailButton>
           <RailButton label="People" active={panel === 'people'} onClick={() => onPanel('people')} badge={incoming.length}>
-            <Users className="h-5 w-5" />
+            <Users className="h-[18px] w-[18px]" />
           </RailButton>
         </div>
         <div className="mt-auto flex flex-col items-center gap-2">
@@ -93,19 +93,19 @@ export default function Sidebar({
             <LogOut className="h-[18px] w-[18px]" />
           </IconButton>
           <button onClick={onProfile} aria-label="Your profile and keys" title="Your profile and keys" className="rounded-full focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none">
-            <Avatar name={account.display_name} seed={account.username} size={38} />
+            <Avatar name={account.display_name} seed={account.username} size={32} />
           </button>
         </div>
       </nav>
 
-      <section className="flex min-w-0 flex-1 flex-col bg-ink-900/70">
+      <section className="flex min-w-0 flex-1 flex-col bg-ink-900">
         {panel === 'people' ? (
           peopleSlot
         ) : (
           <>
-            <header className="px-4 pt-5 pb-3">
+            <header className="px-3 pt-4 pb-2">
               <div className="flex items-center justify-between">
-                <h1 className="text-xl font-semibold tracking-tight">Chats</h1>
+                <h1 className="px-1 text-[15px] font-semibold">Chats</h1>
                 <div className="flex gap-0.5">
                   <IconButton label="Add a connection" onClick={() => onPanel('people')}>
                     <UserPlus className="h-[18px] w-[18px]" />
@@ -121,19 +121,18 @@ export default function Sidebar({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search conversations"
-                  className="h-10 w-full rounded-xl border border-transparent bg-white/[0.05] pr-3 pl-9 text-sm placeholder:text-ink-400 outline-none focus:border-brand-400/50"
+                  className="h-9 w-full rounded-md border border-white/[0.07] bg-ink-850 pr-3 pl-9 text-sm placeholder:text-ink-400 outline-none focus:border-brand-500"
                 />
               </div>
             </header>
             <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
               {rows.length === 0 && (
-                <div className="mx-3 mt-8 rounded-2xl border border-dashed border-white/10 p-6 text-center">
-                  <ShieldCheck className="mx-auto h-8 w-8 text-brand-300" />
-                  <p className="mt-3 text-sm font-medium">{query ? 'No matches' : 'No conversations yet'}</p>
+                <div className="px-3 pt-8 text-center">
+                  <p className="text-sm text-ink-200">{query ? 'No matches' : 'No conversations yet'}</p>
                   {!query && (
                     <>
                       <p className="mt-1 text-xs text-ink-400">Add someone by their username to start an encrypted chat.</p>
-                      <button onClick={() => onPanel('people')} className="mt-4 text-sm font-semibold text-brand-300 hover:text-brand-200">
+                      <button onClick={() => onPanel('people')} className="mt-3 text-sm font-medium text-brand-400 hover:text-brand-300">
                         Find people
                       </button>
                     </>
@@ -147,22 +146,22 @@ export default function Sidebar({
                     key={r.key}
                     onClick={() => open(r.key)}
                     className={clsx(
-                      'group flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left transition',
-                      active === r.key ? 'bg-brand-500/[0.14]' : 'hover:bg-white/[0.04]',
+                      'group flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors',
+                      active === r.key ? 'bg-white/[0.07]' : 'hover:bg-white/[0.03]',
                     )}
                   >
-                    <Avatar name={r.name} seed={r.seed} size={46} online={r.online} group={r.group} />
+                    <Avatar name={r.name} seed={r.seed} size={38} online={r.online} group={r.group} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-[15px] font-medium">{r.name}</span>
-                        <span className={clsx('shrink-0 text-[11px]', r.unread ? 'text-glow' : 'text-ink-400')}>{shortStamp(r.at)}</span>
+                        <span className="truncate text-sm font-medium">{r.name}</span>
+                        <span className={clsx('shrink-0 text-[11px]', r.unread ? 'text-brand-300' : 'text-ink-400')}>{shortStamp(r.at)}</span>
                       </div>
                       <div className="mt-0.5 flex items-center justify-between gap-2">
-                        <span className={clsx('truncate text-[13px]', isTyping ? 'text-glow' : r.unread ? 'text-ink-100' : 'text-ink-400')}>
+                        <span className={clsx('truncate text-[13px]', isTyping ? 'text-brand-300' : r.unread ? 'text-ink-100' : 'text-ink-400')}>
                           {isTyping ? 'typing…' : r.preview}
                         </span>
                         {r.unread > 0 && (
-                          <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-glow px-1.5 text-[11px] font-bold text-ink-950">
+                          <span className="grid h-[18px] min-w-[18px] shrink-0 place-items-center rounded-full bg-brand-500 px-1.5 text-[10px] font-semibold text-white">
                             {r.unread}
                           </span>
                         )}
@@ -198,13 +197,13 @@ function RailButton({
       aria-label={label}
       title={label}
       className={clsx(
-        'relative grid h-11 w-11 place-items-center rounded-2xl transition focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none',
-        active ? 'bg-brand-500/20 text-brand-200' : 'text-ink-400 hover:bg-white/[0.05] hover:text-ink-100',
+        'relative grid h-9 w-9 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:outline-none',
+        active ? 'bg-white/[0.08] text-ink-100' : 'text-ink-400 hover:bg-white/[0.05] hover:text-ink-100',
       )}
     >
       {children}
       {!!badge && (
-        <span className="absolute -top-0.5 -right-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-ink-950">
+        <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-brand-500 px-1 text-[10px] font-semibold text-white ring-2 ring-ink-950">
           {badge}
         </span>
       )}

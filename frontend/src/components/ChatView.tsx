@@ -122,15 +122,15 @@ export default function ChatView({ convKey, onBack, onInfo }: { convKey: Convers
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <header className="glass z-10 flex h-[68px] shrink-0 items-center gap-3 border-x-0 border-t-0 px-3 sm:px-5">
+      <header className="z-10 flex h-14 shrink-0 items-center gap-2 border-b border-white/[0.07] bg-ink-900 px-3 sm:px-4">
         <IconButton label="Back" onClick={onBack} className="md:hidden">
           <ArrowLeft className="h-5 w-5" />
         </IconButton>
         <button onClick={onInfo} className="flex min-w-0 flex-1 items-center gap-3 text-left">
-          <Avatar name={name} seed={seed} size={42} online={contact ? online : undefined} group={!!group} />
+          <Avatar name={name} seed={seed} size={34} online={contact ? online : undefined} group={!!group} />
           <div className="min-w-0">
-            <div className="truncate font-semibold">{name}</div>
-            <div className={clsx('truncate text-xs', typers.length || online ? 'text-glow' : 'text-ink-400')}>{subtitle}</div>
+            <div className="truncate text-sm font-semibold">{name}</div>
+            <div className="truncate text-xs text-ink-400">{subtitle}</div>
           </div>
         </button>
         {contact && (
@@ -139,7 +139,7 @@ export default function ChatView({ convKey, onBack, onInfo }: { convKey: Convers
               <Phone className="h-[18px] w-[18px]" />
             </IconButton>
             <IconButton label="Video call" disabled={callsDisabled} onClick={() => startCall(contact.id, 'video')}>
-              <Video className="h-5 w-5" />
+              <Video className="h-[18px] w-[18px]" />
             </IconButton>
           </>
         )}
@@ -164,21 +164,21 @@ export default function ChatView({ convKey, onBack, onInfo }: { convKey: Convers
             </div>
           )}
           {conv?.loaded && !conv.hasMore && (
-            <div className="mx-auto my-4 flex max-w-sm items-start gap-2.5 rounded-2xl bg-amber-300/[0.06] px-4 py-3 text-xs leading-relaxed text-amber-100/70">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-300/80" />
+            <div className="mx-auto my-4 flex max-w-sm items-start justify-center gap-1.5 px-4 text-center text-xs leading-relaxed text-ink-400">
+              <Lock className="mt-0.5 h-3 w-3 shrink-0" />
               {group
-                ? 'Messages in this group are encrypted with a shared AES-256 key held only by its members.'
-                : 'Messages are end-to-end encrypted with X25519 keys. Only you and ' + name.split(' ')[0] + ' can read them.'}
+                ? 'Messages in this group are end-to-end encrypted with a key only its members hold.'
+                : 'Messages are end-to-end encrypted. Only you and ' + name.split(' ')[0] + ' can read them.'}
             </div>
           )}
           <MessageList messages={messages} myId={account.id} groupMembers={group?.members} />
         </div>
       </div>
 
-      <div className="shrink-0 px-3 pt-2 pb-3 sm:px-6 sm:pb-5">
+      <div className="shrink-0 px-3 pt-2 pb-3 sm:px-6 sm:pb-4">
         <div className="mx-auto max-w-3xl">
           {error && <p className="mb-2 px-1 text-xs text-rose-300">{error}</p>}
-          <div className="glass flex items-end gap-2 rounded-2xl p-1.5 pl-4 focus-within:border-brand-400/40">
+          <div className="flex items-end gap-2 rounded-lg border border-white/[0.09] bg-ink-850 p-1 pl-3 transition-colors focus-within:border-white/20">
             <textarea
               ref={input}
               rows={1}
@@ -187,15 +187,15 @@ export default function ChatView({ convKey, onBack, onInfo }: { convKey: Convers
               onChange={(e) => onChange(e.target.value)}
               onKeyDown={onKeyDown}
               placeholder={`Message ${name}`}
-              className="max-h-40 min-h-[40px] flex-1 resize-none bg-transparent py-2.5 text-[15px] leading-5 placeholder:text-ink-400 outline-none [field-sizing:content]"
+              className="max-h-40 min-h-[36px] flex-1 resize-none bg-transparent py-2 text-sm leading-5 placeholder:text-ink-400 outline-none [field-sizing:content]"
             />
             <button
               onClick={() => void submit()}
               disabled={!draft.trim()}
               aria-label="Send"
-              className="bg-brand-gradient grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white shadow-lg shadow-brand-600/30 transition hover:brightness-110 disabled:opacity-30 disabled:shadow-none"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-brand-500 text-white transition-colors hover:bg-brand-600 disabled:bg-transparent disabled:text-ink-400"
             >
-              <SendHorizontal className="h-[18px] w-[18px]" />
+              <SendHorizontal className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -230,29 +230,29 @@ function MessageList({
           <Fragment key={m.id}>
             {newDay && (
               <div className="my-4 flex justify-center">
-                <span className="rounded-full bg-white/[0.05] px-3 py-1 text-[11px] font-medium text-ink-300">{dayLabel(m.created_at)}</span>
+                <span className="text-xs font-medium text-ink-400">{dayLabel(m.created_at)}</span>
               </div>
             )}
             <div className={clsx('flex items-end gap-2', mine ? 'justify-end' : 'justify-start', firstOfRun ? 'mt-3' : 'mt-0.5')}>
               {groupMembers && !mine && (
                 <div className="w-8 shrink-0">
-                  {lastOfRun && <Avatar name={sender?.display_name ?? '?'} seed={sender?.username ?? m.sender_id} size={30} />}
+                  {lastOfRun && <Avatar name={sender?.display_name ?? '?'} seed={sender?.username ?? m.sender_id} size={28} />}
                 </div>
               )}
               <div
                 className={clsx(
-                  'max-w-[78%] animate-rise px-3.5 py-2 text-[15px] leading-snug shadow-sm sm:max-w-[65%]',
-                  mine ? 'bg-brand-gradient text-white' : 'bg-ink-800 text-ink-100',
+                  'max-w-[78%] px-3 py-1.5 text-sm leading-relaxed sm:max-w-[65%]',
+                  mine ? 'bg-brand-600 text-white' : 'bg-ink-800 text-ink-100',
                   m.failed && 'bg-ink-850! text-ink-400! italic',
                   mine
-                    ? clsx('rounded-2xl', !firstOfRun && 'rounded-tr-md', !lastOfRun && 'rounded-br-md')
-                    : clsx('rounded-2xl', !firstOfRun && 'rounded-tl-md', !lastOfRun && 'rounded-bl-md'),
+                    ? clsx('rounded-lg', !firstOfRun && 'rounded-tr-sm', !lastOfRun && 'rounded-br-sm')
+                    : clsx('rounded-lg', !firstOfRun && 'rounded-tl-sm', !lastOfRun && 'rounded-bl-sm'),
                   m.pending && 'opacity-70',
                 )}
               >
-                {sender && firstOfRun && <div className="mb-0.5 text-xs font-semibold text-brand-300">{sender.display_name}</div>}
+                {sender && firstOfRun && <div className="mb-0.5 text-xs font-medium text-ink-300">{sender.display_name}</div>}
                 <span className="break-words whitespace-pre-wrap">{m.text}</span>
-                <span className={clsx('float-right mt-1.5 ml-3 text-[10px] leading-none', mine ? 'text-white/65' : 'text-ink-400')}>
+                <span className={clsx('float-right mt-1.5 ml-3 text-[10px] leading-none', mine ? 'text-white/60' : 'text-ink-400')}>
                   {m.pending ? 'sending…' : timeOfDay(m.created_at)}
                 </span>
               </div>

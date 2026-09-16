@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Globe2, KeyRound, Lock, WifiOff } from 'lucide-react'
+import { Lock, WifiOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import CallOverlay from '../components/CallOverlay'
 import ChatView from '../components/ChatView'
@@ -8,12 +8,10 @@ import PeoplePanel from '../components/PeoplePanel'
 import Sidebar, { type Panel } from '../components/Sidebar'
 import { Logo, Spinner } from '../components/ui'
 import { socket } from '../lib/socket'
-import { useAuth } from '../store/auth'
 import { useCall } from '../store/call'
 import { useChat } from '../store/chat'
 
 export default function MessengerPage() {
-  const account = useAuth((s) => s.account)!
   const { ready, active, open, bootstrap, handle, unread } = useChat()
   const handleCall = useCall((s) => s.handle)
   const [panel, setPanel] = useState<Panel>('chats')
@@ -69,10 +67,9 @@ export default function MessengerPage() {
 
   return (
     <div className="relative flex h-full overflow-hidden">
-      <div className="aurora" />
       <div
         className={clsx(
-          'relative z-10 h-full w-full shrink-0 border-r border-white/[0.05] md:w-[380px]',
+          'relative z-10 h-full w-full shrink-0 border-r border-white/[0.07] md:w-[340px]',
           active ? 'hidden md:block' : 'block',
         )}
       >
@@ -94,7 +91,7 @@ export default function MessengerPage() {
 
       <main className={clsx('relative z-10 h-full min-w-0 flex-1', active ? 'block' : 'hidden md:block')}>
         {!connected && (
-          <div className="absolute top-[76px] left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-amber-400/15 px-3 py-1.5 text-xs text-amber-200 backdrop-blur">
+          <div className="absolute top-[76px] left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.08] bg-ink-850 px-3 py-1.5 text-xs text-ink-200">
             <WifiOff className="h-3.5 w-3.5" /> Reconnecting…
           </div>
         )}
@@ -102,17 +99,12 @@ export default function MessengerPage() {
           <ChatView convKey={active} onBack={() => open(null)} onInfo={() => setDetails(true)} />
         ) : (
           <div className="grid h-full place-items-center p-8">
-            <div className="max-w-md text-center">
-              <div className="mx-auto grid h-20 w-20 place-items-center rounded-3xl bg-brand-500/10">
-                <Lock className="h-9 w-9 text-brand-300" />
-              </div>
-              <h2 className="mt-6 text-2xl font-semibold tracking-tight">Hi {account.display_name.split(' ')[0]}</h2>
-              <p className="mt-2 text-ink-300">Pick a conversation, or add someone by username to start one. Everything you send is encrypted on this device first.</p>
-              <div className="mt-8 grid grid-cols-3 gap-3 text-xs text-ink-400">
-                <Feature icon={<Lock className="h-4 w-4" />} label="Asymmetric DMs" />
-                <Feature icon={<KeyRound className="h-4 w-4" />} label="Shared-key groups" />
-                <Feature icon={<Globe2 className="h-4 w-4" />} label="Global calls" />
-              </div>
+            <div className="max-w-xs text-center">
+              <p className="text-[15px] font-medium text-ink-200">No conversation selected</p>
+              <p className="mt-1 text-sm text-ink-400">Choose a chat from the list, or add a contact by username.</p>
+              <p className="mt-6 flex items-center justify-center gap-1.5 text-xs text-ink-400">
+                <Lock className="h-3 w-3" /> End-to-end encrypted
+              </p>
             </div>
           </div>
         )}
@@ -126,11 +118,3 @@ export default function MessengerPage() {
   )
 }
 
-function Feature({ icon, label }: { icon: React.ReactNode; label: string }) {
-  return (
-    <div className="glass flex flex-col items-center gap-2 rounded-2xl px-2 py-4">
-      <span className="text-brand-300">{icon}</span>
-      {label}
-    </div>
-  )
-}

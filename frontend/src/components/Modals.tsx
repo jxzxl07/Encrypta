@@ -14,7 +14,7 @@ function Fingerprint({ publicKey }: { publicKey: string }) {
   useEffect(() => {
     void fingerprint(publicKey).then(setFp)
   }, [publicKey])
-  return <code className="block rounded-xl bg-ink-950/70 px-3 py-2.5 text-center font-mono text-sm tracking-wider text-brand-200">{fp || '…'}</code>
+  return <code className="block rounded-md border border-white/[0.07] bg-ink-850 px-3 py-2 text-center font-mono text-sm tracking-wider text-ink-100">{fp || '…'}</code>
 }
 
 function MemberPicker({
@@ -34,7 +34,7 @@ function MemberPicker({
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Filter connections"
-        className="mb-2 h-10 w-full rounded-xl bg-white/[0.05] px-3 text-sm placeholder:text-ink-400 outline-none"
+        className="mb-2 h-10 w-full rounded-lg bg-white/[0.05] px-3 text-sm placeholder:text-ink-400 outline-none"
       />
       <div className="max-h-64 space-y-0.5 overflow-y-auto">
         {shown.length === 0 && <p className="py-4 text-center text-sm text-ink-400">No connections to add.</p>}
@@ -45,15 +45,15 @@ function MemberPicker({
               key={p.id}
               type="button"
               onClick={() => onToggle(p.id)}
-              className={clsx('flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition', on ? 'bg-brand-500/15' : 'hover:bg-white/[0.04]')}
+              className={clsx('flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition', on ? 'bg-white/[0.06]' : 'hover:bg-white/[0.03]')}
             >
               <Avatar name={p.display_name} seed={p.username} size={36} />
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">{p.display_name}</div>
                 <div className="truncate text-xs text-ink-400">@{p.username}</div>
               </div>
-              <span className={clsx('grid h-5 w-5 place-items-center rounded-md border', on ? 'border-brand-400 bg-brand-500 text-white' : 'border-white/20')}>
-                {on && <Check className="h-3.5 w-3.5" />}
+              <span className={clsx('grid h-4 w-4 place-items-center rounded border', on ? 'border-brand-500 bg-brand-500 text-white' : 'border-white/25')}>
+                {on && <Check className="h-3 w-3" />}
               </span>
             </button>
           )
@@ -161,8 +161,8 @@ export function DetailsModal({ convKey, open, onClose }: { convKey: Conversation
     return (
       <Modal open={open} onClose={onClose} title="Contact">
         <div className="flex flex-col items-center text-center">
-          <Avatar name={u.display_name} seed={u.username} size={84} online={online[u.id]} />
-          <h3 className="mt-3 text-lg font-semibold">{u.display_name}</h3>
+          <Avatar name={u.display_name} seed={u.username} size={64} online={online[u.id]} />
+          <h3 className="mt-3 text-base font-semibold">{u.display_name}</h3>
           <p className="text-sm text-ink-400">
             @{u.username} · {online[u.id] ? 'online' : `last seen ${relative(lastSeen[u.id] ?? u.last_seen_at)}`}
           </p>
@@ -219,7 +219,7 @@ export function DetailsModal({ convKey, open, onClose }: { convKey: Conversation
                 value={renaming}
                 maxLength={64}
                 onChange={(e) => setRenaming(e.target.value)}
-                className="h-10 min-w-0 flex-1 rounded-xl bg-ink-950/70 px-3 outline-none"
+                className="h-10 min-w-0 flex-1 rounded-lg bg-ink-950/70 px-3 outline-none"
               />
               <Button type="submit" className="h-10" loading={busy}>
                 Save
@@ -227,7 +227,7 @@ export function DetailsModal({ convKey, open, onClose }: { convKey: Conversation
             </form>
           ) : (
             <div className="flex items-center gap-1">
-              <h3 className="truncate text-lg font-semibold">{group.name}</h3>
+              <h3 className="truncate text-base font-semibold">{group.name}</h3>
               <IconButton label="Rename group" className="h-8 w-8" onClick={() => setRenaming(group.name)}>
                 <Pencil className="h-3.5 w-3.5" />
               </IconButton>
@@ -241,9 +241,9 @@ export function DetailsModal({ convKey, open, onClose }: { convKey: Conversation
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <span className="text-xs font-semibold tracking-wider text-ink-400 uppercase">Members</span>
+        <span className="text-xs font-medium text-ink-400">Members</span>
         {isOwner && !adding && addable.length > 0 && (
-          <button onClick={() => setAdding(true)} className="flex items-center gap-1.5 text-sm font-semibold text-brand-300 hover:text-brand-200">
+          <button onClick={() => setAdding(true)} className="flex items-center gap-1.5 text-sm font-medium text-brand-400 hover:text-brand-300">
             <UserPlus className="h-4 w-4" /> Add
           </button>
         )}
@@ -284,12 +284,12 @@ export function DetailsModal({ convKey, open, onClose }: { convKey: Conversation
       ) : (
         <div className="mt-2 space-y-0.5">
           {group.members.map((m) => (
-            <div key={m.id} className="flex items-center gap-3 rounded-xl px-1 py-1.5">
+            <div key={m.id} className="flex items-center gap-3 rounded-lg px-1 py-1.5">
               <Avatar name={m.display_name} seed={m.username} size={38} online={m.id === account.id ? true : online[m.id]} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 truncate text-sm font-medium">
                   {m.id === account.id ? 'You' : m.display_name}
-                  {m.id === group.owner_id && <Crown className="h-3.5 w-3.5 text-amber-300" />}
+                  {m.id === group.owner_id && <Crown className="h-3.5 w-3.5 text-ink-400" />}
                 </div>
                 <div className="truncate text-xs text-ink-400">@{m.username}</div>
               </div>
@@ -308,7 +308,7 @@ export function DetailsModal({ convKey, open, onClose }: { convKey: Conversation
         </div>
       )}
 
-      <p className="mt-5 flex gap-2 rounded-xl bg-white/[0.03] p-3 text-xs leading-relaxed text-ink-400">
+      <p className="mt-5 flex gap-2 rounded-lg bg-white/[0.03] p-3 text-xs leading-relaxed text-ink-400">
         <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         Everyone in this group shares one AES-256 key. When someone leaves, the key is replaced so they can't read new messages. New members can't read messages sent before they joined.
       </p>
@@ -339,8 +339,8 @@ export function ProfileModal({ open, onClose }: { open: boolean; onClose: () => 
   return (
     <Modal open={open} onClose={onClose} title="Your account">
       <div className="flex flex-col items-center text-center">
-        <Avatar name={account.display_name} seed={account.username} size={84} />
-        <h3 className="mt-3 text-lg font-semibold">{account.display_name}</h3>
+        <Avatar name={account.display_name} seed={account.username} size={64} />
+        <h3 className="mt-3 text-base font-semibold">{account.display_name}</h3>
         <p className="text-sm text-ink-400">@{account.username}</p>
         <p className="text-sm text-ink-400">{account.email}</p>
       </div>

@@ -58,8 +58,8 @@ export default function PeoplePanel({ onOpenChat }: { onOpenChat: (userId: strin
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <header className="px-4 pt-5 pb-3">
-        <h1 className="text-xl font-semibold tracking-tight">People</h1>
+      <header className="px-3 pt-4 pb-2">
+        <h1 className="px-1 text-[15px] font-semibold">People</h1>
         <div className="relative mt-3">
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400" />
           <input
@@ -68,7 +68,7 @@ export default function PeoplePanel({ onOpenChat }: { onOpenChat: (userId: strin
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Find by username"
             autoCapitalize="none"
-            className="h-10 w-full rounded-xl border border-transparent bg-white/[0.05] pr-9 pl-9 text-sm placeholder:text-ink-400 outline-none focus:border-brand-400/50"
+            className="h-9 w-full rounded-md border border-white/[0.07] bg-ink-850 pr-9 pl-9 text-sm placeholder:text-ink-400 outline-none focus:border-brand-500"
           />
           {searching && <Loader2 className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 animate-spin text-ink-400" />}
         </div>
@@ -95,7 +95,7 @@ export default function PeoplePanel({ onOpenChat }: { onOpenChat: (userId: strin
                   <button
                     disabled={busy === r.id}
                     onClick={() => request(r.username, r.id)}
-                    className="flex h-8 items-center gap-1.5 rounded-lg bg-brand-500/20 px-3 text-xs font-semibold text-brand-200 transition hover:bg-brand-500/30 disabled:opacity-50"
+                    className="flex h-8 items-center gap-1.5 rounded-md border border-white/[0.09] bg-ink-850 px-2.5 text-xs font-medium text-ink-100 transition-colors hover:bg-ink-800 disabled:opacity-50"
                   >
                     {busy === r.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UserPlus className="h-3.5 w-3.5" />}
                     {r.status === 'incoming' ? 'Accept' : 'Connect'}
@@ -117,7 +117,7 @@ export default function PeoplePanel({ onOpenChat }: { onOpenChat: (userId: strin
                       label="Accept"
                       disabled={busy === c.connection_id}
                       onClick={() => accept(c.connection_id)}
-                      className="bg-emerald-400/15 text-emerald-300 hover:bg-emerald-400/25 hover:text-emerald-200"
+                      className="text-ink-100 hover:bg-white/[0.08]"
                     >
                       <Check className="h-[18px] w-[18px]" />
                     </IconButton>
@@ -164,14 +164,14 @@ export default function PeoplePanel({ onOpenChat }: { onOpenChat: (userId: strin
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-4">
-      <h3 className="px-2.5 pt-2 pb-1.5 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">{title}</h3>
+      <h3 className="px-2 pt-2 pb-1 text-xs font-medium text-ink-400">{title}</h3>
       {children}
     </div>
   )
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="px-2.5 py-3 text-sm text-ink-400">{children}</p>
+  return <p className="px-2 py-2 text-sm text-ink-400">{children}</p>
 }
 
 function PersonRow({
@@ -188,10 +188,10 @@ function PersonRow({
   children?: React.ReactNode
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl px-2.5 py-2 hover:bg-white/[0.03]">
-      <Avatar name={name} seed={username} size={42} online={online} />
+    <div className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-white/[0.03]">
+      <Avatar name={name} seed={username} size={36} online={online} />
       <div className="min-w-0 flex-1">
-        <div className="truncate text-[15px] font-medium">{name}</div>
+        <div className="truncate text-sm font-medium">{name}</div>
         <div className="truncate text-xs text-ink-400">
           @{username}
           {sub && ` · ${sub}`}
