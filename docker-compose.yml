@@ -1,0 +1,20 @@
+# Local development database. In production point DATABASE_URL at a hosted
+# Postgres (Neon, Supabase, RDS…) so the app is reachable worldwide.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: encrypta
+      POSTGRES_PASSWORD: encrypta
+      POSTGRES_DB: encrypta
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U encrypta"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:
